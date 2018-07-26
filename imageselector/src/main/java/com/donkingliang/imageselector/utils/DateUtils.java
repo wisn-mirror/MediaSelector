@@ -6,6 +6,38 @@ import java.util.Date;
 
 public class DateUtils {
 
+    public static  String getTimeStr(long duration) {
+        try {
+            StringBuffer sb = new StringBuffer();
+            long l = duration / 1000;        //计算奔视频有多少秒
+            long hour = l / 3600;                //计算有多少个小时
+            long min = (l - hour * 3600) / 60;        //计算有多少分钟
+            long sec = l % 60;        //计算有多少秒
+            if (hour != 0) {
+                if (hour < 10) {
+                    sb.append("0" + hour + ":");
+                } else {
+                    sb.append(hour + ":");
+                }
+            }
+            if (min < 10) {
+                sb.append("0" + min + ":");
+            } else {
+                sb.append(min + ":");
+            }
+            if (sec < 10) {
+                sb.append("0" + sec);
+            } else {
+                sb.append(sec);
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public static String getImageTime(long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

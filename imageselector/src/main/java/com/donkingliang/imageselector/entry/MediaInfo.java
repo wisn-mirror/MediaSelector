@@ -2,11 +2,12 @@ package com.donkingliang.imageselector.entry;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  *图片实体类
  */
-public class MediaInfo implements Parcelable {
+public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
 
     private String path;
     private long time;
@@ -116,5 +117,10 @@ public class MediaInfo implements Parcelable {
 //                ", mimeType='" + mimeType + '\'' +
 //                '}';
         return  "path='" + path ;
+    }
+
+    @Override
+    public int compareTo(@NonNull MediaInfo o) {
+        return o.time>this.time?1:-1;
     }
 }

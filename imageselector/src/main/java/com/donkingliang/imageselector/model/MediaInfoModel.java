@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.MediaInfo;
+import com.donkingliang.imageselector.utils.DateUtils;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,13 +39,19 @@ public class MediaInfoModel {
             @Override
             public void run() {
                 ArrayList<MediaInfo> allImage = getAllImage(context);
-//                if(containsVideo){
-
-                ArrayList<MediaInfo> allVideo = getAllVideo(context);
-                allImage.addAll(allVideo);
-//                }
-                Collections.reverse(allImage);
-                callback.onSuccess(splitFolder(allImage));
+                if (containsVideo) {
+                    ArrayList<MediaInfo> allVideo = getAllVideo(context);
+                    allImage.addAll(allVideo);
+                    ArrayList<Folder> folders = splitFolder(allImage);
+                    //按照时间排序
+                    for(int i=0;i<folders.size();i++){
+                        Collections.sort(folders.get(i).getImages());
+                    }
+                    callback.onSuccess(folders);
+                }else{
+                    Collections.reverse(allImage);
+                    callback.onSuccess(splitFolder(allImage));
+                }
             }
         }).start();
     }
@@ -155,7 +163,7 @@ public class MediaInfoModel {
                 String mimeType = allVideo.getString(
                         allVideo.getColumnIndex(MediaStore.Video.Media.MIME_TYPE));
                 if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
-                    images.add(new MediaInfo(path, time, name, mimeType, true,getTimeStr(duration)));
+                    images.add(new MediaInfo(path, time, name, mimeType, true, DateUtils.getTimeStr(duration)));
                 }
                 Log.d(TAG, "<<<<<<<<<<<<<" + images + "\n");
             }
@@ -163,38 +171,6 @@ public class MediaInfoModel {
         }
         return images;
     }
-
-    public static  String getTimeStr(long duration) {
-        try {
-            StringBuffer sb = new StringBuffer();
-            long l = duration / 1000;        //计算奔视频有多少秒
-            long hour = l / 3600;                //计算有多少个小时
-            long min = (l - hour * 3600) / 60;        //计算有多少分钟
-            long sec = l % 60;        //计算有多少秒
-            if (hour != 0) {
-                if (hour < 10) {
-                    sb.append("0" + hour + ":");
-                } else {
-                    sb.append(hour + ":");
-                }
-            }
-            if (min < 10) {
-                sb.append("0" + min + ":");
-            } else {
-                sb.append(min + ":");
-            }
-            if (sec < 10) {
-                sb.append("0" + sec);
-            } else {
-                sb.append(sec);
-            }
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     /**
      * 把图片按文件夹拆分，第一个文件夹保存所有的图片
