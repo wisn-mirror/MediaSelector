@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--  <include
+          android:id="@+id/viewStub"
+          layout="@layout/item_header"
+          android:layout_width="match_parent"
+          android:layout_height="45dp" />-->
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@null"
+        android:gravity="left|top"
+        android:hint="此时此地，想和大家分享什么"
+        android:maxLength="1000"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn_unlimited"
+        android:layout_marginTop="10dp" />
+</LinearLayout>
