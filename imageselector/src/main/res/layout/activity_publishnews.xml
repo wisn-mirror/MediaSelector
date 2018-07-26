@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--  <include
-          android:id="@+id/viewStub"
-          layout="@layout/item_header"
-          android:layout_width="match_parent"
-          android:layout_height="45dp" />-->
+    <include
+        android:id="@+id/viewStub"
+        layout="@layout/item_header"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
 
     <EditText
         android:layout_width="match_parent"
