@@ -103,9 +103,10 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
             this.finish();
         } else if (v == ll_album) {
             ImageSelector.builder()
-                    .useCamera(true) // 设置是否使用拍照
-                    .setSingle(false)  //设置是否单选
-                    .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
+                    .useCamera(true)
+                    .setSingle(false)
+                    .setMaxSelectCount(9)
+                    .useContainsVideo(true)
                     .start(this, ImageSelector.REQUEST_CODE); // 打开相册
         } else if (v == ll_shooting) {
             checkPermissionAndCamera();

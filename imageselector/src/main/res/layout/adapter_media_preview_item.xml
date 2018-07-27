@@ -5,12 +5,13 @@
     android:orientation="vertical">
 
     <com.donkingliang.imageselector.view.FullScreenVideoView
-        android:id="@+id/video"
+        android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 </FrameLayout>
