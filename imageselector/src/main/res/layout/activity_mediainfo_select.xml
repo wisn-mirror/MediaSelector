@@ -44,7 +44,7 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/rv_image"
         android:layout_alignTop="@+id/rv_image"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="150dp"
         android:background="@android:color/white"
         android:fadingEdge="none"
         android:fadingEdgeLength="0dp"
@@ -89,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/image"
+                android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
             <ImageView
@@ -167,6 +168,7 @@
                 android:src="@drawable/icon_image_select" />
 
             <TextView
+                android:id="@+id/tv_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"

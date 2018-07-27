@@ -44,11 +44,11 @@ public class MediaInfoModel {
                     allImage.addAll(allVideo);
                     ArrayList<Folder> folders = splitFolder(allImage);
                     //按照时间排序
-                    for(int i=0;i<folders.size();i++){
+                    for (int i = 0; i < folders.size(); i++) {
                         Collections.sort(folders.get(i).getImages());
                     }
                     callback.onSuccess(folders);
-                }else{
+                } else {
                     Collections.reverse(allImage);
                     callback.onSuccess(splitFolder(allImage));
                 }
@@ -80,6 +80,7 @@ public class MediaInfoModel {
                         MediaStore.Images.Media.DISPLAY_NAME,
                         MediaStore.Images.Media.DATE_ADDED,
                         MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.SIZE,
                         MediaStore.Images.Media.MIME_TYPE},
                 null,
                 null,
@@ -99,13 +100,13 @@ public class MediaInfoModel {
                 //获取图片时间
                 long time = mCursor.getLong(
                         mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-
+                long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
                 //获取图片类型
                 String mimeType = mCursor.getString(
                         mCursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
 
                 if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
-                    images.add(new MediaInfo(path, time, name, mimeType));
+                    images.add(new MediaInfo(path, time, name, mimeType, size));
                 }
             }
             mCursor.close();
@@ -136,6 +137,7 @@ public class MediaInfoModel {
                         MediaStore.Video.Media.DISPLAY_NAME,
                         MediaStore.Video.Media.DATE_ADDED,
                         MediaStore.Video.Media._ID,
+                        MediaStore.Video.Media.SIZE,
                         MediaStore.Video.Media.DURATION,
                         MediaStore.Video.Media.MIME_TYPE},
                 where,
@@ -155,6 +157,8 @@ public class MediaInfoModel {
                 //获取视频创建时间
                 long time = allVideo.getLong(
                         allVideo.getColumnIndex(MediaStore.Video.Media.DATE_ADDED));
+                long size = allVideo.getLong(allVideo.getColumnIndex(MediaStore.Video.Media.SIZE));
+
                 //获取视频时间
                 long duration = allVideo.getLong(
                         allVideo.getColumnIndex(MediaStore.Video.Media.DURATION));
@@ -163,7 +167,7 @@ public class MediaInfoModel {
                 String mimeType = allVideo.getString(
                         allVideo.getColumnIndex(MediaStore.Video.Media.MIME_TYPE));
                 if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
-                    images.add(new MediaInfo(path, time, name, mimeType, true, DateUtils.getTimeStr(duration)));
+                    images.add(new MediaInfo(path, time, name, mimeType, true, DateUtils.getTimeStr(duration), size));
                 }
                 Log.d(TAG, "<<<<<<<<<<<<<" + images + "\n");
             }

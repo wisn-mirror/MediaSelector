@@ -7,6 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.donkingliang.imageselector.adapter.ImageAdapter;
 import com.donkingliang.imageselector.entry.MediaInfo;
@@ -17,9 +21,19 @@ import java.util.ArrayList;
 /**
  * Created by Wisn on 2018/7/26 下午4:55.
  */
-public class PublishNewsActivity extends AppCompatActivity {
+public class PublishNewsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayList<MediaInfo> selectImages;
+    public int currentStatus = PrivateOrPublicActivity.PUBLIC;
+    public static final int PUBLIC_Static = 100;
+    private RecyclerView rvImage;
+    private ImageAdapter mAdapter;
+    private LinearLayout ll_public;
+    private TextView tv_public_status;
+
+    private TextView tv_left;
+    private TextView tv_right;
+    private TextView tv_title;
 
     public static void start(ArrayList<MediaInfo> media, Activity activity) {
         Intent intent = new Intent(activity, PublishNewsActivity.class);
@@ -28,9 +42,6 @@ public class PublishNewsActivity extends AppCompatActivity {
         activity.overridePendingTransition(0, 0);
     }
 
-    private RecyclerView rvImage;
-    private ImageAdapter mAdapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +49,16 @@ public class PublishNewsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         selectImages = intent.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
         rvImage = findViewById(R.id.rv_image);
-        rvImage.setLayoutManager(new GridLayoutManager(this, 3));
+        ll_public = findViewById(R.id.ll_public);
+        tv_public_status = findViewById(R.id.tv_public_status);
+
+        tv_left = findViewById(R.id.tv_left);
+        tv_right = findViewById(R.id.tv_right);
+        tv_title = findViewById(R.id.tv_title);
+        tv_left.setOnClickListener(this);
+        tv_right.setOnClickListener(this);
+        ll_public.setOnClickListener(this);
+        rvImage.setLayoutManager(new GridLayoutManager(this, 4));
         mAdapter = new ImageAdapter(this);
         rvImage.setAdapter(mAdapter);
         mAdapter.refresh(selectImages);
@@ -55,14 +75,36 @@ public class PublishNewsActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public void onClick(View v) {
+        if (v == ll_public) {
+            startActivityForResult(new Intent(this, PrivateOrPublicActivity.class), PUBLIC_Static);
+        } else if (v == tv_right) {
+            Toast.makeText(this, "发布", Toast.LENGTH_SHORT).show();
+        } else if (v == tv_left) {
+            PublishNewsActivity.this.finish();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ImageSelector.REQUEST_CODE && data != null) {
             ArrayList<MediaInfo> selectImages = data.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
             mAdapter.refresh(selectImages);
-            return ;
-         }
+            return;
+        } else if (requestCode == PUBLIC_Static && data != null) {
+            currentStatus = data.getIntExtra(PrivateOrPublicActivity.PrivateOrPublic, PrivateOrPublicActivity.PUBLIC);
+            if (currentStatus == PrivateOrPublicActivity.PUBLIC) {
+                tv_public_status.setText("公开");
+            } else if (currentStatus == PrivateOrPublicActivity.PRIVATE) {
+                tv_public_status.setText("私密");
+            }
+            return;
+        }
         this.finish();
     }
+
+
 }

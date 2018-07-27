@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="0.2dp">
+    android:layout_margin="4dp">
 
     <com.donkingliang.imageselector.view.SquareImageView
         android:id="@+id/iv_image"
@@ -14,10 +14,10 @@
 
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="right|top"
-        android:padding="8dp"
+        android:padding="6dp"
         android:src="@drawable/icon_cancel" />
 
     <TextView

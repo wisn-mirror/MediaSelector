@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import java.util.Objects;
-
 /**
  * 图片实体类
  */
@@ -16,23 +14,25 @@ public class MediaInfo implements Parcelable, Comparable<MediaInfo> {
     private String name;
     private String mimeType;
     private boolean isVideo;
+    public long size;
     public String duration;
 
-
-    public MediaInfo(String path, long time, String name, String mimeType) {
+    public MediaInfo(String path, long time, String name, String mimeType,long size) {
         this.path = path;
         this.time = time;
         this.name = name;
         this.mimeType = mimeType;
+        this.size=size;
     }
 
-    public MediaInfo(String path, long time, String name, String mimeType, boolean isVideo, String duration) {
+    public MediaInfo(String path, long time, String name, String mimeType, boolean isVideo, String duration,long size) {
         this.path = path;
         this.time = time;
         this.name = name;
         this.mimeType = mimeType;
         this.isVideo = isVideo;
         this.duration = duration;
+        this.size=size;
     }
 
     public String getPath() {
@@ -90,6 +90,9 @@ public class MediaInfo implements Parcelable, Comparable<MediaInfo> {
         dest.writeLong(this.time);
         dest.writeString(this.name);
         dest.writeString(this.mimeType);
+        dest.writeByte((byte) (this.isVideo ? 1 : 0));
+        dest.writeLong(this.size);
+        dest.writeString(this.duration);
     }
 
     protected MediaInfo(Parcel in) {
@@ -97,6 +100,9 @@ public class MediaInfo implements Parcelable, Comparable<MediaInfo> {
         this.time = in.readLong();
         this.name = in.readString();
         this.mimeType = in.readString();
+        this.isVideo=in.readByte()==1;
+        this.size=in.readLong();
+        this.duration=in.readString();
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.donkingliang.imageselector.utils;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
 
-    public static  String getTimeStr(long duration) {
+    public static String getTimeStr(long duration) {
         try {
             StringBuffer sb = new StringBuffer();
             long l = duration / 1000;        //计算奔视频有多少秒
@@ -54,6 +55,28 @@ public class DateUtils {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
             return sdf.format(date);
         }
+    }
+
+    public static String getNetFileSizeDescription(long size) {
+        StringBuffer bytes = new StringBuffer();
+        DecimalFormat format = new DecimalFormat("###.0");
+        if (size >= 1024 * 1024 * 1024) {
+            double i = (size / (1024.0 * 1024.0 * 1024.0));
+            bytes.append(format.format(i)).append("GB");
+        } else if (size >= 1024 * 1024) {
+            double i = (size / (1024.0 * 1024.0));
+            bytes.append(format.format(i)).append("MB");
+        } else if (size >= 1024) {
+            double i = (size / (1024.0));
+            bytes.append(format.format(i)).append("KB");
+        } else if (size < 1024) {
+            if (size <= 0) {
+                bytes.append("0B");
+            } else {
+                bytes.append((int) size).append("B");
+            }
+        }
+        return bytes.toString();
     }
 
     public static boolean sameDay(Calendar calendar1, Calendar calendar2) {

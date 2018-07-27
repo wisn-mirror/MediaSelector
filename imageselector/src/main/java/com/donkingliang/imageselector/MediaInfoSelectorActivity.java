@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MediaInfoSelectorActivity extends AppCompatActivity {
@@ -97,6 +98,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     //用于接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开选择器，允许用
     // 户把先前选过的图片传进来，并把这些图片默认为选中状态。
     private ArrayList<MediaInfo> mSelectedImages;
+    private TextView tv_size;
 
     /**
      * 启动图片选择器
@@ -111,7 +113,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
      */
     public static void openActivity(Activity activity, int requestCode,
                                     boolean isSingle, boolean useCamera,
-                                    int maxSelectCount, ArrayList<MediaInfo> selected,boolean isContainsVideo) {
+                                    int maxSelectCount, ArrayList<MediaInfo> selected, boolean isContainsVideo) {
         Intent intent = new Intent(activity, MediaInfoSelectorActivity.class);
         intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
@@ -132,9 +134,8 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         useCamera = intent.getBooleanExtra(ImageSelector.USE_CAMERA, true);
         isContainsVideo = intent.getBooleanExtra(ImageSelector.ContainsVideo, false);
         mSelectedImages = intent.getParcelableArrayListExtra(ImageSelector.SELECTED);
-        if(mSelectedImages!=null){
+        if (mSelectedImages != null) {
             Log.d(TAG, "<<<<<<<<<<<<<" + mSelectedImages.size() + "\n");
-
         }
 
         setStatusBarColor();
@@ -143,7 +144,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         initImageList();
         checkPermissionAndLoadImages();
         hideFolderList();
-        setSelectImageCount(0);
+        setSelectImageCount(mAdapter.getSelectImages());
     }
 
     /**
@@ -166,6 +167,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         btnPreview = (FrameLayout) findViewById(R.id.btn_preview);
         tvFolderName = (TextView) findViewById(R.id.tv_folder_name);
         tvTime = (TextView) findViewById(R.id.tv_time);
+        tv_size = (TextView) findViewById(R.id.tv_size);
         masking = findViewById(R.id.masking);
     }
 
@@ -253,8 +255,8 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         }
         mAdapter.setOnImageSelectListener(new MediaInfoAdapter.OnImageSelectListener() {
             @Override
-            public void OnImageSelect(MediaInfo image, boolean isSelect, int selectCount) {
-                setSelectImageCount(selectCount);
+            public void OnImageSelect(List<MediaInfo> selectImage, boolean isSelect) {
+                setSelectImageCount(selectImage);
             }
         });
         mAdapter.setOnItemClickListener(new MediaInfoAdapter.OnItemClickListener() {
@@ -316,7 +318,8 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         }
     }
 
-    private void setSelectImageCount(int count) {
+    private void setSelectImageCount(List<MediaInfo> selectImageList) {
+        int count = selectImageList == null ? 0 : selectImageList.size();
         if (count == 0) {
             btnConfirm.setEnabled(false);
             btnPreview.setEnabled(false);
@@ -334,6 +337,12 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
                 tvConfirm.setText("确定(" + count + ")");
             }
         }
+        long countSize = 0;
+        for (MediaInfo mediaInfo : selectImageList) {
+            countSize = countSize + mediaInfo.size;
+        }
+        tv_size.setText("原图(" + DateUtils.getNetFileSizeDescription(countSize) + ")");
+
     }
 
     /**
@@ -343,7 +352,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         if (!isOpenFolder) {
             masking.setVisibility(View.VISIBLE);
             ObjectAnimator animator = ObjectAnimator.ofFloat(rvFolder, "translationY",
-                    -rvFolder.getHeight(),0).setDuration(300);
+                    -rvFolder.getHeight(), 0).setDuration(300);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -363,7 +372,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         if (isOpenFolder) {
             masking.setVisibility(View.GONE);
             ObjectAnimator animator = ObjectAnimator.ofFloat(rvFolder, "translationY",
-                     0,-rvFolder.getHeight()).setDuration(300);
+                    0, -rvFolder.getHeight()).setDuration(300);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -466,12 +475,12 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
             } else {
                 //否则，就刷新当前页面。
                 mAdapter.notifyDataSetChanged();
-                setSelectImageCount(mAdapter.getSelectImages().size());
+                setSelectImageCount(mAdapter.getSelectImages());
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                ArrayList<MediaInfo> selectImages=new ArrayList<>();
-                selectImages.add(new MediaInfo(mPhotoPath,0,null,null));
+                ArrayList<MediaInfo> selectImages = new ArrayList<>();
+                selectImages.add(new MediaInfo(mPhotoPath, 0, null, null, 0));
                 setResult(selectImages);
                 finish();
             }
@@ -595,7 +604,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
      * 从SDCard加载图片。
      */
     private void loadImageForSDCard() {
-       MediaInfoModel.loadImageForSDCard(this,isContainsVideo, new MediaInfoModel.DataCallback() {
+        MediaInfoModel.loadImageForSDCard(this, isContainsVideo, new MediaInfoModel.DataCallback() {
             @Override
             public void onSuccess(ArrayList<Folder> folders) {
                 mFolders = folders;

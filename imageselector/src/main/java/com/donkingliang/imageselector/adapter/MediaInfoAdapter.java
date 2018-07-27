@@ -16,6 +16,7 @@ import com.donkingliang.imageselector.entry.MediaInfo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.ViewHolder> {
 
@@ -133,7 +134,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     private void selectImage(MediaInfo image) {
         mSelectImages.add(image);
         if (mSelectListener != null) {
-            mSelectListener.OnImageSelect(image, true, mSelectImages.size());
+            mSelectListener.OnImageSelect(mSelectImages, true);
         }
     }
 
@@ -145,7 +146,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     private void unSelectImage(MediaInfo image) {
         mSelectImages.remove(image);
         if (mSelectListener != null) {
-            mSelectListener.OnImageSelect(image, false, mSelectImages.size());
+            mSelectListener.OnImageSelect(mSelectImages, false);
         }
     }
 
@@ -193,7 +194,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
             holder.ivMasking.setAlpha(0.5f);
         } else {
             holder.ivSelectIcon.setImageResource(R.drawable.icon_image_un_select);
-            holder.ivMasking.setAlpha(0.2f);
+            holder.ivMasking.setAlpha(0.1f);
         }
     }
 
@@ -218,6 +219,9 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
                 }
             }
             notifyDataSetChanged();
+        }
+        if (mSelectListener != null) {
+            mSelectListener.OnImageSelect(mSelectImages, true);
         }
     }
 
@@ -265,7 +269,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     }
 
     public interface OnImageSelectListener {
-        void OnImageSelect(MediaInfo image, boolean isSelect, int selectCount);
+        void OnImageSelect(List<MediaInfo> selectImage, boolean isSelect);
     }
 
     public interface OnItemClickListener {

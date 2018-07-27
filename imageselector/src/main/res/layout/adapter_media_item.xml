@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="1dp">
+    android:layout_margin="0.3dp">
 
     <com.donkingliang.imageselector.view.SquareImageView
         android:id="@+id/iv_image"
@@ -17,8 +17,7 @@
         android:id="@+id/iv_masking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@android:color/white" />
+        android:layout_gravity="center" />
 
     <ImageView
         android:id="@+id/iv_select"
