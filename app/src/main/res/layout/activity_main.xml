@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+<!--
     <Button
         android:id="@+id/btn_single"
         android:layout_width="wrap_content"
@@ -38,13 +38,7 @@
         android:layout_toRightOf="@+id/btn_unlimited"
         android:text="单选并剪裁" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_single"
-        android:layout_toRightOf="@+id/btn_clip"
-        android:text="Button" />
+
 
     <ImageView
         android:id="@+id/imageView"
@@ -52,14 +46,18 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btn_unlimited"
         android:layout_toRightOf="@id/btn_clip"
-        app:srcCompat="@android:drawable/alert_light_frame" />
+        app:srcCompat="@android:drawable/alert_light_frame" />-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/btn_unlimited"
-        android:layout_marginTop="10dp" />
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/rv_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_below="@+id/btn_unlimited"-->
+        <!--android:layout_marginTop="10dp" />-->
 
-
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 </RelativeLayout>

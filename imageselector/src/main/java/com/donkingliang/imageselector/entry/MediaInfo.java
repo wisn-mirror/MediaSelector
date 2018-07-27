@@ -4,10 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
- *图片实体类
+ * 图片实体类
  */
-public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
+public class MediaInfo implements Parcelable, Comparable<MediaInfo> {
 
     private String path;
     private long time;
@@ -23,13 +25,14 @@ public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
         this.name = name;
         this.mimeType = mimeType;
     }
-    public MediaInfo(String path, long time, String name, String mimeType, boolean isVideo,String duration) {
+
+    public MediaInfo(String path, long time, String name, String mimeType, boolean isVideo, String duration) {
         this.path = path;
         this.time = time;
         this.name = name;
         this.mimeType = mimeType;
-        this.isVideo=isVideo;
-        this.duration=duration;
+        this.isVideo = isVideo;
+        this.duration = duration;
     }
 
     public String getPath() {
@@ -64,7 +67,7 @@ public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
         this.mimeType = mimeType;
     }
 
-    public boolean isGif(){
+    public boolean isGif() {
         return "image/gif".equals(mimeType);
     }
 
@@ -96,6 +99,23 @@ public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
         this.mimeType = in.readString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MediaInfo mediaInfo = (MediaInfo) o;
+        return (path == mediaInfo.path) || (path != null && path.equals(mediaInfo.path));
+    }
+
+    @Override
+    public int hashCode() {
+        if (path == null)
+            return 0;
+        int result = 1;
+        result = 31 * result + (path == null ? 0 : path.hashCode());
+        return result;
+    }
+
     public static final Parcelable.Creator<MediaInfo> CREATOR = new Parcelable.Creator<MediaInfo>() {
         @Override
         public MediaInfo createFromParcel(Parcel source) {
@@ -110,17 +130,11 @@ public class MediaInfo implements Parcelable,Comparable<MediaInfo> {
 
     @Override
     public String toString() {
-//        return "MediaInfo{" +
-//                "path='" + path + '\'' +
-//                ", time=" + time +
-//                ", name='" + name + '\'' +
-//                ", mimeType='" + mimeType + '\'' +
-//                '}';
-        return  "path='" + path ;
+        return "path='" + path;
     }
 
     @Override
     public int compareTo(@NonNull MediaInfo o) {
-        return o.time>this.time?1:-1;
+        return o.time > this.time ? 1 : -1;
     }
 }

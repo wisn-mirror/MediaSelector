@@ -3,14 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="1dp">
+    android:layout_margin="0.2dp">
 
     <com.donkingliang.imageselector.view.SquareImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#010101"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"  />
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="right|top"
+        android:padding="8dp"
+        android:src="@drawable/icon_cancel" />
+
+    <TextView
+        android:id="@+id/tv_video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:padding="3dp"
+        android:textColor="@android:color/white"
+        android:text="2:00" />
 
 </FrameLayout>

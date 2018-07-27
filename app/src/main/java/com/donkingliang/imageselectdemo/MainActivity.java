@@ -15,31 +15,25 @@ import com.donkingliang.imageselector.utils.ImageSelector;
 
 import java.util.ArrayList;
 
-import static com.donkingliang.imageselector.SelectMediaActivity.REQUEST_CODE;
+import static com.donkingliang.imageselector.utils.ImageSelector.REQUEST_CODE;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-
-    private RecyclerView rvImage;
-    private ImageAdapter mAdapter;
-    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        rvImage = findViewById(R.id.rv_image);
-        rvImage.setLayoutManager(new GridLayoutManager(this, 3));
-        mAdapter = new ImageAdapter(this);
-        rvImage.setAdapter(mAdapter);
-
-        findViewById(R.id.btn_single).setOnClickListener(this);
-        findViewById(R.id.btn_limit).setOnClickListener(this);
-        findViewById(R.id.btn_unlimited).setOnClickListener(this);
-        findViewById(R.id.btn_clip).setOnClickListener(this);
+//
+//        rvImage = findViewById(R.id.rv_image);
+//
+//        findViewById(R.id.btn_single).setOnClickListener(this);
+//        findViewById(R.id.btn_limit).setOnClickListener(this);
+//        findViewById(R.id.btn_unlimited).setOnClickListener(this);
+//        findViewById(R.id.btn_clip).setOnClickListener(this);
         findViewById(R.id.button).setOnClickListener(this);
-        imageView = findViewById(R.id.imageView);
+//        imageView = findViewById(R.id.imageView);
     }
 
     @Override
@@ -47,18 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && data != null) {
             ArrayList<MediaInfo> selectImages = data.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
-            ArrayList<String> images = new ArrayList<>();
-            for (MediaInfo image : selectImages) {
-                images.add(image.getPath());
-            }
-            mAdapter.refresh(images);
+
         }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_single:
+          /*  case R.id.btn_single:
                 //单选
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
                 ImageSelector.builder()
@@ -102,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setCrop(true)  // 设置是否使用图片剪切功能。
                         .setSingle(true)  //设置是否单选
                         .start(this, REQUEST_CODE); // 打开相册
-                break;
+                break;*/
             case R.id.button:
                 //单选并剪裁
 //                MediaInfoModel.loadImageForSDCard(this, new MediaInfoModel.DataCallback() {

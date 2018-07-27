@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.MediaInfoSelectorActivity;
+import com.donkingliang.imageselector.entry.MediaInfo;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,8 @@ public class ImageSelector {
 
     public static final int RESULT_CODE = 0x00000012;
 
+    public static final int REQUEST_CODE = 0x00000011;
+
     public static ImageSelectorBuilder builder() {
         return new ImageSelectorBuilder();
     }
@@ -45,7 +48,7 @@ public class ImageSelector {
         private boolean isSingle = false;
         private boolean isContainsVideo = false;
         private int maxSelectCount;
-        private ArrayList<String> selected;
+        private ArrayList<MediaInfo> selected;
 
         /**
          * 是否使用图片剪切功能。默认false。如果使用了图片剪切功能，相册只能单选。
@@ -103,7 +106,7 @@ public class ImageSelector {
          * @param selected
          * @return
          */
-        public ImageSelectorBuilder setSelected(ArrayList<String> selected) {
+        public ImageSelectorBuilder setSelected(ArrayList<MediaInfo> selected) {
             this.selected = selected;
             return this;
         }

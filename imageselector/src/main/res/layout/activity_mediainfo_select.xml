@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom_bar"
         android:layout_below="@+id/rl_top_bar"
-        android:background="#272828"
+        android:background="@android:color/white"
         android:fadingEdge="none"
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
@@ -71,31 +71,32 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="取消"
-                android:textSize="17sp" />
+                android:textSize="14sp" />
 
         </FrameLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/btn_folder"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_folder_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@string/image"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/tv_folder_name"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_marginLeft="2dp"
-                android:layout_toRightOf="@+id/tv_folder_name"
-                android:src="@drawable/text_indicator" />
-        </RelativeLayout>
+                android:src="@drawable/ic_lyf_arrowdown" />
+        </LinearLayout>
 
 
         <FrameLayout
@@ -120,7 +121,7 @@
                 android:paddingTop="5dp"
                 android:text="下一步"
                 android:textColor="@android:color/white"
-                android:textSize="17sp" />
+                android:textSize="14sp" />
 
         </FrameLayout>
 
@@ -161,13 +162,14 @@
             android:paddingRight="15dp">
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/text_indicator" />
+                android:src="@drawable/icon_image_select" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:text="原图(0.99M)"
                 android:textSize="16sp" />
 

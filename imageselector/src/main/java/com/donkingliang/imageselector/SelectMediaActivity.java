@@ -22,7 +22,6 @@ import java.util.ArrayList;
  * Created by Wisn on 2018/7/26 下午3:08.
  */
 public class SelectMediaActivity extends Activity implements View.OnClickListener {
-    public static final int REQUEST_CODE = 0x00000011;
 
     private ImageView iv_cancel;
     private LinearLayout ll_shooting;
@@ -60,11 +59,10 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && data != null) {
+        if (requestCode == ImageSelector.REQUEST_CODE && data != null) {
             ArrayList<MediaInfo> selectImages = data.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
             PublishNewsActivity.start(selectImages,this);
         }
-        this.finish();
     }
 
     @Override
@@ -82,7 +80,7 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
                     .useCamera(true) // 设置是否使用拍照
                     .setSingle(false)  //设置是否单选
                     .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
-                    .start(this, REQUEST_CODE); // 打开相册
+                    .start(this,ImageSelector.REQUEST_CODE); // 打开相册
         } else if (v == ll_shooting) {
 
         }

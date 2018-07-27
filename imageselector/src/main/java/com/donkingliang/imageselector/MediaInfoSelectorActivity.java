@@ -28,12 +28,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.donkingliang.imageselector.adapter.FolderAdapter;
 import com.donkingliang.imageselector.adapter.MediaInfoAdapter;
@@ -52,6 +54,7 @@ import java.util.Locale;
 
 public class MediaInfoSelectorActivity extends AppCompatActivity {
 
+    private static final String TAG = "MediaInfoSelectorActivity";
     private TextView tvTime;
     private TextView tvFolderName;
     private TextView tvConfirm;
@@ -93,7 +96,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
 
     //用于接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开选择器，允许用
     // 户把先前选过的图片传进来，并把这些图片默认为选中状态。
-    private ArrayList<String> mSelectedImages;
+    private ArrayList<MediaInfo> mSelectedImages;
 
     /**
      * 启动图片选择器
@@ -108,13 +111,13 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
      */
     public static void openActivity(Activity activity, int requestCode,
                                     boolean isSingle, boolean useCamera,
-                                    int maxSelectCount, ArrayList<String> selected,boolean isContainsVideo) {
+                                    int maxSelectCount, ArrayList<MediaInfo> selected,boolean isContainsVideo) {
         Intent intent = new Intent(activity, MediaInfoSelectorActivity.class);
         intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
         intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
         intent.putExtra(ImageSelector.ContainsVideo, isContainsVideo);
-        intent.putStringArrayListExtra(ImageSelector.SELECTED, selected);
+        intent.putParcelableArrayListExtra(ImageSelector.SELECTED, selected);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -128,7 +131,11 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
         useCamera = intent.getBooleanExtra(ImageSelector.USE_CAMERA, true);
         isContainsVideo = intent.getBooleanExtra(ImageSelector.ContainsVideo, false);
-        mSelectedImages = intent.getStringArrayListExtra(ImageSelector.SELECTED);
+        mSelectedImages = intent.getParcelableArrayListExtra(ImageSelector.SELECTED);
+        if(mSelectedImages!=null){
+            Log.d(TAG, "<<<<<<<<<<<<<" + mSelectedImages.size() + "\n");
+
+        }
 
         setStatusBarColor();
         initView();
@@ -228,14 +235,18 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         // 判断屏幕方向
         Configuration configuration = getResources().getConfiguration();
         if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mLayoutManager = new GridLayoutManager(this, 3);
+            mLayoutManager = new GridLayoutManager(this, 4);
         } else {
-            mLayoutManager = new GridLayoutManager(this, 5);
+            mLayoutManager = new GridLayoutManager(this, 6);
         }
 
         rvImage.setLayoutManager(mLayoutManager);
         mAdapter = new MediaInfoAdapter(this, mMaxCount, isSingle);
         rvImage.setAdapter(mAdapter);
+        if (mSelectedImages != null && mAdapter != null) {
+            mAdapter.setSelectedImages(mSelectedImages);
+            mSelectedImages = null;
+        }
         ((SimpleItemAnimator) rvImage.getItemAnimator()).setSupportsChangeAnimations(false);
         if (mFolders != null && !mFolders.isEmpty()) {
             setFolder(mFolders.get(0));
@@ -595,10 +606,6 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
                             initFolderList();
                             mFolders.get(0).setUseCamera(useCamera);
                             setFolder(mFolders.get(0));
-                            if (mSelectedImages != null && mAdapter != null) {
-                                mAdapter.setSelectedImages(mSelectedImages);
-                                mSelectedImages = null;
-                            }
                         }
                     }
                 });

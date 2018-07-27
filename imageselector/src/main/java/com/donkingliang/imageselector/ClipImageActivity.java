@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.donkingliang.imageselector.entry.MediaInfo;
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.view.ClipImageView;
@@ -27,6 +28,14 @@ public class ClipImageActivity extends Activity {
     private ClipImageView imageView;
     private int mRequestCode;
 
+    public static void openActivity(Activity context, int requestCode, boolean useCamera, ArrayList<MediaInfo> selected) {
+        Intent intent = new Intent(context, ClipImageActivity.class);
+        intent.putExtra("requestCode", requestCode);
+        intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
+        intent.putParcelableArrayListExtra(ImageSelector.SELECTED, selected);
+        context.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +48,7 @@ public class ClipImageActivity extends Activity {
         setStatusBarColor();
         MediaInfoSelectorActivity.openActivity(this, mRequestCode, true,
                 intent.getBooleanExtra(ImageSelector.USE_CAMERA, true), 0,
-                intent.getStringArrayListExtra(ImageSelector.SELECTED), intent.getBooleanExtra(ImageSelector.ContainsVideo, false));
+                intent.<MediaInfo>getParcelableArrayListExtra(ImageSelector.SELECTED), intent.getBooleanExtra(ImageSelector.ContainsVideo, false));
         initView();
     }
 
@@ -111,11 +120,4 @@ public class ClipImageActivity extends Activity {
         finish();
     }
 
-    public static void openActivity(Activity context, int requestCode, boolean useCamera, ArrayList<String> selected) {
-        Intent intent = new Intent(context, ClipImageActivity.class);
-        intent.putExtra("requestCode", requestCode);
-        intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
-        intent.putExtra(ImageSelector.SELECTED, selected);
-        context.startActivityForResult(intent, requestCode);
-    }
 }

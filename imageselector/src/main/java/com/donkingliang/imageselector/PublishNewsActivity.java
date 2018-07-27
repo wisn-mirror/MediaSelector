@@ -41,10 +41,28 @@ public class PublishNewsActivity extends AppCompatActivity {
         rvImage.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter = new ImageAdapter(this);
         rvImage.setAdapter(mAdapter);
-        ArrayList<String> images = new ArrayList<>();
-        for (MediaInfo image : selectImages) {
-            images.add(image.getPath());
-        }
-        mAdapter.refresh(images);
+        mAdapter.refresh(selectImages);
+        mAdapter.setAddSelect(new ImageAdapter.AddSelectListener() {
+            @Override
+            public void add(ArrayList<MediaInfo> select) {
+                ImageSelector.builder()
+                        .useCamera(true) // 设置是否使用拍照
+                        .setSingle(false)  //设置是否单选
+                        .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
+                        .setSelected(select)
+                        .start(PublishNewsActivity.this, ImageSelector.REQUEST_CODE); // 打开相册
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ImageSelector.REQUEST_CODE && data != null) {
+            ArrayList<MediaInfo> selectImages = data.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
+            mAdapter.refresh(selectImages);
+            return ;
+         }
+        this.finish();
     }
 }

@@ -61,17 +61,16 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_IMAGE) {
             final MediaInfo mediaInfo = getImage(position);
-
             Glide.with(mContext).load(new File(mediaInfo.getPath()))
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(holder.ivImage);
             setItemSelect(holder, mSelectImages.contains(mediaInfo));
             holder.ivGif.setVisibility(mediaInfo.isGif() ? View.VISIBLE : View.GONE);
-            if(mediaInfo.isVideo()){
+            if (mediaInfo.isVideo()) {
                 holder.tv_video_duration.setVisibility(mediaInfo.isVideo() ? View.VISIBLE : View.GONE);
                 holder.tv_video_duration.setText(mediaInfo.duration);
-            }else{
-                holder.tv_video_duration.setVisibility( View.GONE);
+            } else {
+                holder.tv_video_duration.setVisibility(View.GONE);
             }
 
             //点击选中/取消选中图片
@@ -208,19 +207,14 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
         }
     }
 
-    public void setSelectedImages(ArrayList<String> selected) {
-        if (mImages != null && selected != null) {
-            for (String path : selected) {
+    public void setSelectedImages(ArrayList<MediaInfo> selected) {
+        if ( selected != null) {
+            for (MediaInfo image : selected) {
                 if (isFull()) {
                     return;
                 }
-                for (MediaInfo image : mImages) {
-                    if (path.equals(image.getPath())) {
-                        if (!mSelectImages.contains(image)) {
-                            mSelectImages.add(image);
-                        }
-                        break;
-                    }
+                if (!mSelectImages.contains(image)) {
+                    mSelectImages.add(image);
                 }
             }
             notifyDataSetChanged();
