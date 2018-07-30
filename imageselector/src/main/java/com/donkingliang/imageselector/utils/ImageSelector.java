@@ -28,8 +28,10 @@ public class ImageSelector {
     public static final String SELECTED = "selected";
     //初始位置
     public static final String POSITION = "position";
-
+    //是否包含视频
     public static final String ContainsVideo = "ContainsVideo";
+    //是否选择视频后就只能选一个
+    public static final String isSingleVideo = "isSingleVideo";
 
     public static final String IS_CONFIRM = "is_confirm";
 
@@ -47,6 +49,7 @@ public class ImageSelector {
         private boolean useCamera = true;
         private boolean isSingle = false;
         private boolean isContainsVideo = false;
+        private boolean isSingleVideo = false;
         private int maxSelectCount;
         private ArrayList<MediaInfo> selected;
 
@@ -83,8 +86,13 @@ public class ImageSelector {
             return this;
         }
 
-        public ImageSelectorBuilder useContainsVideo(boolean isContainsVideo) {
+        public ImageSelectorBuilder isContainsVideo(boolean isContainsVideo) {
             this.isContainsVideo = isContainsVideo;
+            return this;
+        }
+
+        public ImageSelectorBuilder isSingleVideo(boolean isSingleVideo) {
+            this.isSingleVideo = isSingleVideo;
             return this;
         }
 
@@ -121,7 +129,7 @@ public class ImageSelector {
             if (isCrop) {
                 ClipImageActivity.openActivity(activity, requestCode, useCamera, selected);
             } else {
-                MediaInfoSelectorActivity.openActivity(activity, requestCode, isSingle, useCamera, maxSelectCount, selected,isContainsVideo);
+                MediaInfoSelectorActivity.openActivity(activity, requestCode, isSingle, useCamera, maxSelectCount, selected,isContainsVideo,isSingleVideo);
             }
         }
     }

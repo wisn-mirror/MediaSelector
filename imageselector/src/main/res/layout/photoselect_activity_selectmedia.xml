@@ -14,7 +14,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:padding="12dp"
-        android:src="@drawable/icon_cancel" />
+        android:src="@drawable/photoselect_icon_cancel" />
 
     <LinearLayout
         android:id="@+id/ll_content"
@@ -36,7 +36,7 @@
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/icon_shooting" />
+                android:src="@drawable/photoselect_icon_shooting" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/icon_album" />
+                android:src="@drawable/photoselect_icon_album" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -13,5 +13,5 @@
         android:background="#acacac"
         android:padding="20dp"
         android:scaleType="center"
-        android:src="@drawable/ic_photo_camera"/>
+        android:src="@drawable/photoselect_ic_photo_camera"/>
 </FrameLayout>

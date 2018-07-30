@@ -40,7 +40,7 @@ public class ClipImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_clip_image);
+        setContentView(R.layout.photoselect_activity_clip_image);
 
         Intent intent = getIntent();
         mRequestCode = intent.getIntExtra("requestCode", 0);
@@ -48,7 +48,7 @@ public class ClipImageActivity extends Activity {
         setStatusBarColor();
         MediaInfoSelectorActivity.openActivity(this, mRequestCode, true,
                 intent.getBooleanExtra(ImageSelector.USE_CAMERA, true), 0,
-                intent.<MediaInfo>getParcelableArrayListExtra(ImageSelector.SELECTED), intent.getBooleanExtra(ImageSelector.ContainsVideo, false));
+                intent.<MediaInfo>getParcelableArrayListExtra(ImageSelector.SELECTED), intent.getBooleanExtra(ImageSelector.ContainsVideo, false),intent.getBooleanExtra(ImageSelector.isSingleVideo, false));
         initView();
     }
 

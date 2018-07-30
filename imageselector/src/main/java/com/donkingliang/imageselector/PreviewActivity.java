@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.donkingliang.imageselector.adapter.ImagePagerAdapter;
 import com.donkingliang.imageselector.entry.MediaInfo;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.ToastUtils;
 import com.donkingliang.imageselector.view.MyViewPager;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class PreviewActivity extends AppCompatActivity {
     private TextView tvSelect;
     private RelativeLayout rlTopBar;
     private RelativeLayout rlBottomBar;
+    private boolean isSingleVideo;
+
 
     //tempImages和tempSelectImages用于图片列表数据的页面传输。
     //之所以不要Intent传输这两个图片列表，因为要保证两位页面操作的是同一个列表数据，同时可以避免数据量大时，
@@ -60,20 +63,21 @@ public class PreviewActivity extends AppCompatActivity {
 
     public static void openActivity(Activity activity, ArrayList<MediaInfo> images,
                                     ArrayList<MediaInfo> selectImages, boolean isSingle,
-                                    int maxSelectCount, int position) {
+                                    int maxSelectCount, int position,boolean isSingleVideo) {
         tempImages = images;
         tempSelectImages = selectImages;
         Intent intent = new Intent(activity, PreviewActivity.class);
         intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
         intent.putExtra(ImageSelector.POSITION, position);
+        intent.putExtra(ImageSelector.isSingleVideo, isSingleVideo);
         activity.startActivityForResult(intent, ImageSelector.RESULT_CODE);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preview);
+        setContentView(R.layout.photoselect_activity_preview);
 
         setStatusBarVisible(true);
         mImages = tempImages;
@@ -84,13 +88,14 @@ public class PreviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mMaxCount = intent.getIntExtra(ImageSelector.MAX_SELECT_COUNT, 0);
         isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
+        isSingleVideo = intent.getBooleanExtra(ImageSelector.isSingleVideo, false);
 
         Resources resources = getResources();
-        Bitmap selectBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_image_select);
+        Bitmap selectBitmap = BitmapFactory.decodeResource(resources, R.drawable.photoselect_icon_image_select);
         mSelectDrawable = new BitmapDrawable(resources, selectBitmap);
         mSelectDrawable.setBounds(0, 0, selectBitmap.getWidth(), selectBitmap.getHeight());
 
-        Bitmap unSelectBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_image_un_select);
+        Bitmap unSelectBitmap = BitmapFactory.decodeResource(resources, R.drawable.photoselect_icon_image_un_select);
         mUnSelectDrawable = new BitmapDrawable(resources, unSelectBitmap);
         mUnSelectDrawable.setBounds(0, 0, unSelectBitmap.getWidth(), unSelectBitmap.getHeight());
 
@@ -188,6 +193,7 @@ public class PreviewActivity extends AppCompatActivity {
      * 获取状态栏高度
      *
      * @param context
+     *
      * @return
      */
     public static int getStatusBarHeight(Context context) {
@@ -267,7 +273,7 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
         animator.start();
-        ofFloat(rlBottomBar, "translationY", 0, -rlBottomBar.getHeight()*2)
+        ofFloat(rlBottomBar, "translationY", 0, -rlBottomBar.getHeight() * 2)
                 .setDuration(300).start();
     }
 
@@ -279,6 +285,26 @@ public class PreviewActivity extends AppCompatActivity {
                 mSelectImages.remove(image);
             } else if (isSingle) {
                 mSelectImages.clear();
+                mSelectImages.add(image);
+            } else if (isSingleVideo && mSelectImages != null && mSelectImages.size() > 0) {
+                if (image.isVideo()) {
+                    for (MediaInfo mediaInfo1 : mSelectImages) {
+                        if (mediaInfo1.isVideo()) {
+                            ToastUtils.show(this, "视频只能单选");
+                        } else {
+                            ToastUtils.show(this, "视频和图片不能同时选择");
+                        }
+                        break;
+                    }
+                    return;
+                } else {
+                    for (MediaInfo mediaInfo1 : mSelectImages) {
+                        if (mediaInfo1.isVideo()) {
+                            ToastUtils.show(this, "视频只能单选");
+                            return;
+                        }
+                    }
+                }
                 mSelectImages.add(image);
             } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
                 mSelectImages.add(image);
@@ -317,30 +343,4 @@ public class PreviewActivity extends AppCompatActivity {
         setResult(ImageSelector.RESULT_CODE, intent);
         super.finish();
     }
-
-
-    /*
-     try {
-        Uri uri = Uri.parse(“xxx”);
-        mVideoPlayer.setVideoURI(uri);
-        mVideoPlayer.requestFocus();
-        mVideoPlayer.setOnPreparedListener(new      MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                if (mp.isPlaying()) {
-                    mp.stop();
-                    mp.release();
-                    mp = new MediaPlayer();
-                }
-                mp.setVolume(0f, 0f);
-                mp.setLooping(false);
-                mp.start();
-            }
-        });
-    mVideoPlayer.setFocusable(false);
-        mVideoPlayer.start();
-      } catch (Exception e) {
-        e.printStackTrace();
-    }
-     */
 }

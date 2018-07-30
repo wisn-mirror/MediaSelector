@@ -68,7 +68,7 @@ public class SelectMediaActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_selectmedia);
+        setContentView(R.layout.photoselect_activity_selectmedia);
         BlurBehind.getInstance()
                 .withAlpha(1000)
                 .withFilterColor(Color.parseColor("#000000"))
@@ -159,7 +159,8 @@ public class SelectMediaActivity extends AppCompatActivity implements View.OnCli
                     .useCamera(true)
                     .setSingle(false)
                     .setMaxSelectCount(9)
-                    .useContainsVideo(true)
+                    .isContainsVideo(true)
+                    .isSingleVideo(true)
                     .start(this, ImageSelector.REQUEST_CODE); // 打开相册
         } else if (v == ll_shooting) {
             checkPermissionAndCamera();

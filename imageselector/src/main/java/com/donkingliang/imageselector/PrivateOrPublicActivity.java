@@ -63,12 +63,12 @@ public class PrivateOrPublicActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View v) {
         if (v == ll_public) {
-            iv_public.setImageResource(R.drawable.icon_image_select);
-            iv_private.setImageResource(R.drawable.icon_image_un_select);
+            iv_public.setImageResource(R.drawable.photoselect_icon_image_select);
+            iv_private.setImageResource(R.drawable.photoselect_icon_image_un_select);
             currentStatus = PUBLIC;
         } else if (v == ll_private) {
-            iv_public.setImageResource(R.drawable.icon_image_un_select);
-            iv_private.setImageResource(R.drawable.icon_image_select);
+            iv_public.setImageResource(R.drawable.photoselect_icon_image_un_select);
+            iv_private.setImageResource(R.drawable.photoselect_icon_image_select);
             currentStatus = PRIVATE;
         } else if (v == tv_left) {
             this.finish();

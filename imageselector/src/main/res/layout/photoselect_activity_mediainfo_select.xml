@@ -90,14 +90,18 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/image"
+                android:ellipsize="end"
+                android:maxLength="10"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
+            <!--android:text="@string/image"-->
 
             <ImageView
+                android:id="@+id/iv_arrow"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginLeft="2dp"
-                android:src="@drawable/ic_lyf_arrowdown" />
+                android:src="@drawable/photoselect_ic_lyf_arrowdown" />
         </LinearLayout>
 
 
@@ -166,7 +170,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_image_select" />
+                android:src="@drawable/photoselect_icon_image_select" />
 
             <TextView
                 android:id="@+id/tv_size"

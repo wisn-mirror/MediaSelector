@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/viewStub"
-        layout="@layout/item_header"
+        layout="@layout/photoselect_item_header"
         android:layout_width="match_parent"
         android:layout_height="45dp" />
 
@@ -25,7 +25,7 @@
             android:id="@+id/iv_public"
             android:layout_width="14dp"
             android:layout_height="14dp"
-            android:src="@drawable/icon_image_select" />
+            android:src="@drawable/photoselect_icon_image_select" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
             android:id="@+id/iv_private"
             android:layout_width="14dp"
             android:layout_height="14dp"
-            android:src="@drawable/icon_image_un_select" />
+            android:src="@drawable/photoselect_icon_image_un_select" />
 
         <LinearLayout
             android:layout_width="match_parent"

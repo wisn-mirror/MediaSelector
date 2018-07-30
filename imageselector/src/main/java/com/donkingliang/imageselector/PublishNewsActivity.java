@@ -45,7 +45,7 @@ public class PublishNewsActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_publishnews);
+        setContentView(R.layout.photoselect_activity_publishnews);
         Intent intent = getIntent();
         selectImages = intent.getParcelableArrayListExtra(ImageSelector.SELECT_RESULT);
         rvImage = findViewById(R.id.rv_image);

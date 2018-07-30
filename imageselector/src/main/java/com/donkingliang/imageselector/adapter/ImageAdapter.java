@@ -35,14 +35,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.adapter_media_item_new, parent, false);
+        View view = mInflater.inflate(R.layout.photoselect_adapter_media_item_new, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         if (position == (getItemCount() - 1)&&canAdd) {
-            holder.ivImage.setImageResource(R.drawable.icon_add_failure);
+            holder.ivImage.setImageResource(R.drawable.photoselect_icon_add_failure);
             holder.tv_video_duration.setVisibility(View.GONE);
             holder.iv_delete.setVisibility(View.GONE);
             holder.ivImage.setOnClickListener(new View.OnClickListener() {

@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +83,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     private boolean isInitFolder;
     private boolean isSingle;
     private boolean isContainsVideo;
+    private boolean isSingleVideo;
     private int mMaxCount;
 
     private boolean useCamera = true;
@@ -99,26 +101,38 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     // 户把先前选过的图片传进来，并把这些图片默认为选中状态。
     private ArrayList<MediaInfo> mSelectedImages;
     private TextView tv_size;
+    private ImageView iv_arrow;
 
     /**
      * 启动图片选择器
      *
      * @param activity
      * @param requestCode
-     * @param isSingle       是否单选
-     * @param useCamera      是否使用拍照功能
-     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
-     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
-     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     * @param isSingle
+     * @param useCamera
+     * @param maxSelectCount
+     * @param selected
+     */
+    /**
+     * @param activity
+     * @param requestCode
+     * @param isSingle        是否单选
+     * @param useCamera       是否使用拍照功能
+     * @param maxSelectCount  图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param selected        接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
+     *                        选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     * @param isContainsVideo 是否包含视频
+     * @param isSingleVideo   是否选择视频后就只能选一个
      */
     public static void openActivity(Activity activity, int requestCode,
                                     boolean isSingle, boolean useCamera,
-                                    int maxSelectCount, ArrayList<MediaInfo> selected, boolean isContainsVideo) {
+                                    int maxSelectCount, ArrayList<MediaInfo> selected, boolean isContainsVideo, boolean isSingleVideo) {
         Intent intent = new Intent(activity, MediaInfoSelectorActivity.class);
         intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
         intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
         intent.putExtra(ImageSelector.ContainsVideo, isContainsVideo);
+        intent.putExtra(ImageSelector.isSingleVideo, isSingleVideo);
         intent.putParcelableArrayListExtra(ImageSelector.SELECTED, selected);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -126,18 +140,14 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mediainfo_select);
-
+        setContentView(R.layout.photoselect_activity_mediainfo_select);
         Intent intent = getIntent();
         mMaxCount = intent.getIntExtra(ImageSelector.MAX_SELECT_COUNT, 0);
         isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
         useCamera = intent.getBooleanExtra(ImageSelector.USE_CAMERA, true);
         isContainsVideo = intent.getBooleanExtra(ImageSelector.ContainsVideo, false);
+        isSingleVideo = intent.getBooleanExtra(ImageSelector.isSingleVideo, false);
         mSelectedImages = intent.getParcelableArrayListExtra(ImageSelector.SELECTED);
-        if (mSelectedImages != null) {
-            Log.d(TAG, "<<<<<<<<<<<<<" + mSelectedImages.size() + "\n");
-        }
-
         setStatusBarColor();
         initView();
         initListener();
@@ -159,6 +169,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        iv_arrow = (ImageView) findViewById(R.id.iv_arrow);
         rvImage = (RecyclerView) findViewById(R.id.rv_image);
         rvFolder = (RecyclerView) findViewById(R.id.rv_folder);
         tvConfirm = (TextView) findViewById(R.id.tv_confirm);
@@ -243,7 +254,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         }
 
         rvImage.setLayoutManager(mLayoutManager);
-        mAdapter = new MediaInfoAdapter(this, mMaxCount, isSingle);
+        mAdapter = new MediaInfoAdapter(this, mMaxCount, isSingle, isSingleVideo);
         rvImage.setAdapter(mAdapter);
         if (mSelectedImages != null && mAdapter != null) {
             mAdapter.setSelectedImages(mSelectedImages);
@@ -321,13 +332,13 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     private void setSelectImageCount(List<MediaInfo> selectImageList) {
         int count = selectImageList == null ? 0 : selectImageList.size();
         if (count == 0) {
-            btnConfirm.setEnabled(false);
-            btnPreview.setEnabled(false);
+//            btnConfirm.setEnabled(false);
+//            btnPreview.setEnabled(false);
             tvConfirm.setText("确定");
             tvPreview.setText("预览");
         } else {
-            btnConfirm.setEnabled(true);
-            btnPreview.setEnabled(true);
+//            btnConfirm.setEnabled(true);
+//            btnPreview.setEnabled(true);
             tvPreview.setText("预览(" + count + ")");
             if (isSingle) {
                 tvConfirm.setText("确定");
@@ -350,9 +361,10 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
      */
     private void openFolder() {
         if (!isOpenFolder) {
+            iv_arrow.setImageResource(R.drawable.photoselect_ic_lyf_rrowup);
             masking.setVisibility(View.VISIBLE);
             ObjectAnimator animator = ObjectAnimator.ofFloat(rvFolder, "translationY",
-                    -rvFolder.getHeight(), 30,-30,10,-10,0).setDuration(300);
+                    -rvFolder.getHeight(), 30, -30, 10, -10, 0).setDuration(300);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -370,9 +382,10 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
      */
     private void closeFolder() {
         if (isOpenFolder) {
+            iv_arrow.setImageResource(R.drawable.photoselect_ic_lyf_arrowdown);
             masking.setVisibility(View.GONE);
             ObjectAnimator animator = ObjectAnimator.ofFloat(rvFolder, "translationY",
-                    0, -rvFolder.getHeight()).setDuration(300);
+                    0, 30, -30, -rvFolder.getHeight()).setDuration(300);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -430,7 +443,10 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         }
         //因为图片的实体类是Image，而我们返回的是String数组，所以要进行转换。
         ArrayList<MediaInfo> selectImages = mAdapter.getSelectImages();
-
+        if (selectImages == null || selectImages.size() == 0) {
+            Toast.makeText(this, "请选择", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //点击确定，把选中的图片通过Intent传给上一个Activity。
         setResult(selectImages);
         finish();
@@ -445,7 +461,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
     private void toPreviewActivity(ArrayList<MediaInfo> images, int position) {
         if (images != null && !images.isEmpty()) {
             PreviewActivity.openActivity(this, images,
-                    mAdapter.getSelectImages(), isSingle, mMaxCount, position);
+                    mAdapter.getSelectImages(), isSingle, mMaxCount, position, isSingleVideo);
         }
     }
 

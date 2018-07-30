@@ -1,40 +1,33 @@
 package com.donkingliang.imageselector.utils;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.media.ExifInterface;
-import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.annotation.FloatRange;
 import android.text.format.DateFormat;
 import android.util.Log;
-
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
-
 public class ImageUtil {
 
-    public static String saveImage(Bitmap bitmap, String path) {
+    private static RequestOptions requestOptions;
 
+    public static String saveImage(Bitmap bitmap, String path) {
         String name = new DateFormat().format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".png";
         FileOutputStream b = null;
         File file = new File(path);
@@ -63,21 +56,14 @@ public class ImageUtil {
         return "";
     }
 
-    public static Bitmap zoomBitmap(Bitmap bm, int reqWidth, int reqHeight) {
-        // 获得图片的宽高
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        // 计算缩放比例
-        float scaleWidth = ((float) reqWidth) / width;
-        float scaleHeight = ((float) reqHeight) / height;
-        float scale = Math.min(scaleWidth, scaleHeight);
-        // 取得想要缩放的matrix参数
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        // 得到新的图片
-        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix,
-                true);
-        return newbm;
+    public static void loadImage(Context context, String filePath, ImageView imageView) {
+        if (requestOptions == null) {
+            requestOptions = new RequestOptions();
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+        }
+        Glide.with(context).load(new File(filePath))
+                .apply(requestOptions)
+                .into(imageView);
     }
 
     /**
@@ -189,7 +175,7 @@ public class ImageUtil {
     @SuppressLint("NewApi")
     public static Bitmap apply(Context context, Bitmap sentBitmap, int radius) {
 
-        Bitmap bitmap = Bitmap.createScaledBitmap(sentBitmap, sentBitmap.getWidth()/2, sentBitmap.getHeight()/2, false);
+        Bitmap bitmap = Bitmap.createScaledBitmap(sentBitmap, sentBitmap.getWidth() / 2, sentBitmap.getHeight() / 2, false);
 
         if (Build.VERSION.SDK_INT > 16) {
             final RenderScript rs = RenderScript.create(context);
@@ -204,34 +190,6 @@ public class ImageUtil {
 
             return bitmap;
         }
-
-        // Stack Blur v1.0 from
-        // http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
-        //
-        // Java Author: Mario Klingemann <mario at quasimondo.com>
-        // http://incubator.quasimondo.com
-        // created Feburary 29, 2004
-        // Android port : Yahel Bouaziz <yahel at kayenko.com>
-        // http://www.kayenko.com
-        // ported april 5th, 2012
-
-        // This is a compromise between Gaussian Blur and Box blur
-        // It creates much better looking blurs than Box Blur, but is
-        // 7x faster than my Gaussian Blur implementation.
-        //
-        // I called it Stack Blur because this describes best how this
-        // filter works internally: it creates a kind of moving stack
-        // of colors whilst scanning through the image. Thereby it
-        // just has to add one new block of color to the right side
-        // of the stack and remove the leftmost color. The remaining
-        // colors on the topmost layer of the stack are either added on
-        // or reduced by one, depending on if they are on the right or
-        // on the left side of the stack.
-        //
-        // If you are using this algorithm in your code please add
-        // the following line:
-        //
-        // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
 
         if (radius < 1) {
             return (null);

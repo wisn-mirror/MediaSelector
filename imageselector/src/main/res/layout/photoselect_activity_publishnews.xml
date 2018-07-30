@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/viewStub"
-        layout="@layout/item_header"
+        layout="@layout/photoselect_item_header"
         android:layout_width="match_parent"
         android:layout_height="45dp" />
 
@@ -86,7 +86,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/icon_next" />
+                    android:src="@drawable/photoselect_icon_next" />
             </LinearLayout>
 
             <View
@@ -127,7 +127,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/icon_next" />
+                    android:src="@drawable/photoselect_icon_next" />
             </LinearLayout>
 
             <View

@@ -28,7 +28,7 @@
         android:paddingRight="8dp"
         android:paddingLeft="10dp"
         android:paddingBottom="10dp"
-        android:src="@drawable/icon_image_un_select" />
+        android:src="@drawable/photoselect_icon_image_un_select" />
 
     <ImageView
         android:id="@+id/iv_gif"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:padding="3dp"
-        android:src="@drawable/ic_gif"
+        android:src="@drawable/photoselect_ic_gif"
         android:visibility="gone" />
 
     <TextView

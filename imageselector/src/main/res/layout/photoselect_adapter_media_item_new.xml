@@ -18,7 +18,7 @@
         android:layout_height="24dp"
         android:layout_gravity="right|top"
         android:padding="6dp"
-        android:src="@drawable/icon_cancel" />
+        android:src="@drawable/photoselect_icon_cancel" />
 
     <TextView
         android:id="@+id/tv_video_duration"

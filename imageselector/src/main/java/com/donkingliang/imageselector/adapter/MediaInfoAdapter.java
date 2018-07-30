@@ -13,6 +13,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.MediaInfo;
+import com.donkingliang.imageselector.utils.ImageUtil;
+import com.donkingliang.imageselector.utils.ToastUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.List;
 
 public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.ViewHolder> {
 
+    private boolean isSingleVideo;
     private Context mContext;
     private ArrayList<MediaInfo> mImages;
     private LayoutInflater mInflater;
@@ -40,20 +43,21 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
      * @param maxCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
      * @param isSingle 是否单选
      */
-    public MediaInfoAdapter(Context context, int maxCount, boolean isSingle) {
+    public MediaInfoAdapter(Context context, int maxCount, boolean isSingle, boolean isSingleVideo) {
         mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
         mMaxCount = maxCount;
         this.isSingle = isSingle;
+        this.isSingleVideo = isSingleVideo;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_IMAGE) {
-            View view = mInflater.inflate(R.layout.adapter_media_item, parent, false);
+            View view = mInflater.inflate(R.layout.photoselect_adapter_media_item, parent, false);
             return new ViewHolder(view);
         } else {
-            View view = mInflater.inflate(R.layout.adapter_camera, parent, false);
+            View view = mInflater.inflate(R.layout.photoselect_adapter_camera, parent, false);
             return new ViewHolder(view);
         }
     }
@@ -62,9 +66,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_IMAGE) {
             final MediaInfo mediaInfo = getImage(position);
-            Glide.with(mContext).load(new File(mediaInfo.getPath()))
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .into(holder.ivImage);
+            ImageUtil.loadImage(mContext, mediaInfo.getPath(), holder.ivImage);
             setItemSelect(holder, mSelectImages.contains(mediaInfo));
             holder.ivGif.setVisibility(mediaInfo.isGif() ? View.VISIBLE : View.GONE);
             if (mediaInfo.isVideo()) {
@@ -85,6 +87,29 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
                     } else if (isSingle) {
                         //如果是单选，就先清空已经选中的图片，再选中当前图片
                         clearImageSelect();
+                        selectImage(mediaInfo);
+                        setItemSelect(holder, true);
+                    } else if (isSingleVideo) {
+                        if (mSelectImages != null && mSelectImages.size() > 0) {
+                            if (mediaInfo.isVideo()) {
+                                for (MediaInfo mediaInfo1 : mSelectImages) {
+                                    if (mediaInfo1.isVideo()) {
+                                        ToastUtils.show(mContext, "视频只能单选");
+                                    } else {
+                                        ToastUtils.show(mContext, "视频和图片不能同时选择");
+                                    }
+                                    break;
+                                }
+                                return;
+                            }else{
+                                for (MediaInfo mediaInfo1 : mSelectImages) {
+                                    if (mediaInfo1.isVideo()) {
+                                        ToastUtils.show(mContext, "视频只能单选");
+                                        return ;
+                                    }
+                                }
+                            }
+                        }
                         selectImage(mediaInfo);
                         setItemSelect(holder, true);
                     } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
@@ -190,10 +215,10 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
      */
     private void setItemSelect(ViewHolder holder, boolean isSelect) {
         if (isSelect) {
-            holder.ivSelectIcon.setImageResource(R.drawable.icon_image_select);
+            holder.ivSelectIcon.setImageResource(R.drawable.photoselect_icon_image_select);
             holder.ivMasking.setAlpha(0.5f);
         } else {
-            holder.ivSelectIcon.setImageResource(R.drawable.icon_image_un_select);
+            holder.ivSelectIcon.setImageResource(R.drawable.photoselect_icon_image_un_select);
             holder.ivMasking.setAlpha(0.1f);
         }
     }
@@ -209,7 +234,7 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
     }
 
     public void setSelectedImages(ArrayList<MediaInfo> selected) {
-        if ( selected != null) {
+        if (selected != null) {
             for (MediaInfo image : selected) {
                 if (isFull()) {
                     return;
@@ -228,6 +253,9 @@ public class MediaInfoAdapter extends RecyclerView.Adapter<MediaInfoAdapter.View
 
     private boolean isFull() {
         if (isSingle && mSelectImages.size() == 1) {
+            return true;
+        }
+        if (isSingleVideo && mSelectImages.size() == 1 && mSelectImages.get(0).isVideo()) {
             return true;
         } else if (mMaxCount > 0 && mSelectImages.size() == mMaxCount) {
             return true;

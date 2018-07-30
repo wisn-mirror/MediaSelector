@@ -101,6 +101,7 @@ public class MediaInfoModel {
                 long time = mCursor.getLong(
                         mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                 long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                if (size < 1024 || TextUtils.isEmpty(path)) continue;
                 //获取图片类型
                 String mimeType = mCursor.getString(
                         mCursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
@@ -158,7 +159,7 @@ public class MediaInfoModel {
                 long time = allVideo.getLong(
                         allVideo.getColumnIndex(MediaStore.Video.Media.DATE_ADDED));
                 long size = allVideo.getLong(allVideo.getColumnIndex(MediaStore.Video.Media.SIZE));
-
+                if (size < 1024 || TextUtils.isEmpty(path)) continue;
                 //获取视频时间
                 long duration = allVideo.getLong(
                         allVideo.getColumnIndex(MediaStore.Video.Media.DURATION));
@@ -169,7 +170,6 @@ public class MediaInfoModel {
                 if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
                     images.add(new MediaInfo(path, time, name, mimeType, true, DateUtils.getTimeStr(duration), size));
                 }
-                Log.d(TAG, "<<<<<<<<<<<<<" + images + "\n");
             }
             allVideo.close();
         }
