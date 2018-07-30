@@ -352,7 +352,7 @@ public class MediaInfoSelectorActivity extends AppCompatActivity {
         if (!isOpenFolder) {
             masking.setVisibility(View.VISIBLE);
             ObjectAnimator animator = ObjectAnimator.ofFloat(rvFolder, "translationY",
-                    -rvFolder.getHeight(), 0).setDuration(300);
+                    -rvFolder.getHeight(), 30,-30,10,-10,0).setDuration(300);
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {

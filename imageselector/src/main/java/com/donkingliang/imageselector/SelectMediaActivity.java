@@ -1,10 +1,12 @@
 package com.donkingliang.imageselector;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,16 +17,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.os.EnvironmentCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import android.widget.RelativeLayout;
 import com.donkingliang.imageselector.entry.MediaInfo;
 import com.donkingliang.imageselector.utils.BlurBehind;
 import com.donkingliang.imageselector.utils.ImageSelector;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -35,7 +39,7 @@ import java.util.Locale;
 /**
  * Created by Wisn on 2018/7/26 下午3:08.
  */
-public class SelectMediaActivity extends Activity implements View.OnClickListener {
+public class SelectMediaActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView iv_cancel;
     private LinearLayout ll_shooting;
@@ -45,6 +49,9 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
     private static final int CAMERA_REQUEST_CODE = 0x00000010;
 
     private String mPhotoPath;
+    private RelativeLayout content;
+    private LinearLayout ll_content;
+    private ViewTreeObserver.OnGlobalLayoutListener listener;
 
     public static void start(final Activity context) {
         BlurBehind.getInstance().execute(context, new BlurBehind.OnBlurCompleteListener() {
@@ -69,10 +76,56 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
         iv_cancel = findViewById(R.id.iv_cancel);
         ll_shooting = findViewById(R.id.ll_shooting);
         ll_album = findViewById(R.id.ll_album);
+        content = findViewById(R.id.content);
+        ll_content = findViewById(R.id.ll_content);
         iv_cancel.setOnClickListener(this);
         ll_shooting.setOnClickListener(this);
         ll_album.setOnClickListener(this);
+        listener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                showIcon(ll_content.getHeight());
+            }
+        };
+        ll_content.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+    }
 
+
+    public void showIcon(int contentHeigth) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(ll_content, "translationY",
+                contentHeigth, -40, +40, -30, +30, -20, +20, -10, +10, -6, +6, 0
+        ).setDuration(400);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                ll_content.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+        animator.start();
+    }
+
+    public void hideIcon(int contentHeigth) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(ll_content, "translationY",
+                0, 6, -6, 10, -10, 20, -20, 40, -40, contentHeigth).setDuration(400);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                SelectMediaActivity.this.finish();
+            }
+        });
+        animator.start();
     }
 
     @Override
@@ -84,11 +137,11 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<MediaInfo> selectImages = new ArrayList<>();
-                selectImages.add(new MediaInfo(mPhotoPath, 0, null, null,0));
+                selectImages.add(new MediaInfo(mPhotoPath, 0, null, null, 0));
                 PublishNewsActivity.start(selectImages, this);
-                finish();
             }
         }
+        finish();
     }
 
     @Override
@@ -100,7 +153,7 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if (v == iv_cancel) {
-            this.finish();
+            hideIcon(ll_content.getHeight());
         } else if (v == ll_album) {
             ImageSelector.builder()
                     .useCamera(true)
@@ -153,6 +206,14 @@ public class SelectMediaActivity extends Activity implements View.OnClickListene
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount()== 0) {
+            hideIcon(ll_content.getHeight());
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = String.format("JPEG_%s.jpg", timeStamp);

@@ -1,5 +1,6 @@
 package com.donkingliang.imageselector;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +20,6 @@ public class PrivateOrPublicActivity extends AppCompatActivity implements View.O
     public static final int PUBLIC_UNCONTACT = 4;
     public static final String PrivateOrPublic = "PrivateOrPublic";
     public int currentStatus = PUBLIC;
-
     private LinearLayout ll_public;
     private ImageView iv_public;
     private LinearLayout ll_private;
@@ -27,6 +27,13 @@ public class PrivateOrPublicActivity extends AppCompatActivity implements View.O
     private TextView tv_left;
     private TextView tv_right;
     private TextView tv_title;
+
+    public static void start(Activity mContext, int RequstCode, int selectPrivateOrPublic) {
+        Intent intent = new Intent(mContext, PrivateOrPublicActivity.class);
+        intent.putExtra(PrivateOrPublicActivity.PrivateOrPublic, selectPrivateOrPublic);
+        mContext.startActivityForResult(intent, RequstCode);
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +52,12 @@ public class PrivateOrPublicActivity extends AppCompatActivity implements View.O
         ll_private.setOnClickListener(this);
         tv_left.setOnClickListener(this);
         tv_right.setOnClickListener(this);
+        currentStatus = getIntent().getIntExtra(PrivateOrPublicActivity.PrivateOrPublic, PrivateOrPublicActivity.PUBLIC);
+        if (currentStatus == PrivateOrPublicActivity.PUBLIC) {
+            onClick(ll_public);
+        } else if (currentStatus == PrivateOrPublicActivity.PRIVATE) {
+            onClick(ll_private);
+        }
     }
 
     @Override

@@ -79,7 +79,7 @@ public class PublishNewsActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         if (v == ll_public) {
-            startActivityForResult(new Intent(this, PrivateOrPublicActivity.class), PUBLIC_Static);
+            PrivateOrPublicActivity.start(this,PUBLIC_Static,currentStatus);
         } else if (v == tv_right) {
             Toast.makeText(this, "发布", Toast.LENGTH_SHORT).show();
         } else if (v == tv_left) {
@@ -102,8 +102,10 @@ public class PublishNewsActivity extends AppCompatActivity implements View.OnCli
                 tv_public_status.setText("私密");
             }
             return;
+        }else{
+            this.finish();
+
         }
-        this.finish();
     }
 
 
